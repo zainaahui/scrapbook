@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para el mejor novio - Te Amo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for romantic typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QRCode generator library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f7f2ed;
+            color: #4a151b;
+        }
+        .font-script {
+            font-family: 'Great Vibes', cursive;
+        }
+        .font-serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .heart-beat {
+            animation: pulse-heart 1.5s infinite;
+        }
+        /* Polaroid card styling optimized for mobile */
+        .polaroid {
+            background: white;
+            padding: 10px 10px 32px 10px;
+            box-shadow: 0 8px 20px -4px rgba(114, 28, 36, 0.12), 0 4px 6px -2px rgba(114, 28, 36, 0.08);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#721c24] selection:text-white">
+
+    <header class="w-full text-center py-8 px-4 relative overflow-hidden bg-gradient-to-b from-[#f5eedc] to-[#f7f2ed] border-b border-[#e2d4bd]">
+        <div class="max-w-md mx-auto relative z-10">
+            <h1 class="font-serif-title text-4xl md:text-6xl font-bold text-[#721c24] mb-2 tracking-wide">Para el mejor novio -Te Amo</h1>
+            <p class="font-script text-2xl md:text-3xl text-[#99333b] mb-4">"Cada momento a tu lado es mi recuerdo favorito"</p>
+            <div class="flex justify-center items-center gap-1.5 text-[#721c24]">
+                <i class="fa-solid fa-heart text-[10px] opacity-75"></i>
+                <i class="fa-solid fa-heart text-xs"></i>
+                <i class="fa-solid fa-heart text-sm"></i>
+                <i class="fa-solid fa-heart text-xs"></i>
+                <i class="fa-solid fa-heart text-[10px] opacity-75"></i>
+            </div>
+        </div>
+        <div class="absolute -top-8 -left-8 w-36 h-36 bg-[#ebdcc2] rounded-full opacity-30 blur-xl pointer-events-none"></div>
+    </header>
+
+    <main class="flex-grow max-w-xl w-full mx-auto px-4 py-8 space-y-8">
+        
+        <!-- Compact Mailbox Button Section -->
+        <section class="flex flex-col items-center justify-center">
+            <div onclick="document.getElementById('memoryInput').click();" class="inline-flex items-center gap-3 bg-[#721c24] hover:bg-[#5a141c] text-amber-100 py-3 px-6 rounded-full shadow-lg border border-amber-200/40 cursor-pointer transition-all transform active:scale-95 group">
+                <div class="w-8 h-8 rounded-full bg-amber-400 text-[#721c24] flex items-center justify-center shadow-md heart-beat">
+                    <i class="fa-solid fa-heart text-xs"></i>
+                </div>
+                <div class="text-left">
+                    <p class="text-[10px] uppercase tracking-wider text-amber-200 font-medium">Buzón de amor</p>
+                    <p class="text-xs font-semibold text-white">Añadir nuevos recuerdos aquí</p>
+                </div>
+                <i class="fa-solid fa-plus text-xs text-amber-300 ml-1 group-hover:rotate-90 transition-transform"></i>
+            </div>
+            <!-- Hidden file input -->
+            <input type="file" id="memoryInput" accept="image/*" multiple class="hidden" onchange="handleFiles(this.files)">
+        </section>
+
+        <!-- Gallery Header & Count -->
+        <section>
+            <div class="flex items-center justify-between mb-6 border-b border-[#e2d4bd] pb-3">
+                <div>
+                    <h2 class="font-serif-title text-2xl font-bold text-[#721c24]">Nuestra Galería</h2>
+                    <p class="text-xs text-stone-600 font-light">Momentos guardados con el corazón</p>
+                </div>
+                <div class="text-xs text-[#721c24] bg-[#f5eedc] px-3 py-1 rounded-full font-medium border border-[#ebdcc2]">
+                    <span id="memoryCount">10</span> fotos
+                </div>
+            </div>
+
+            <!-- Gallery Grid optimized for mobile (1 to 2 columns fluid) -->
+            <div id="memoryGrid" class="grid grid-cols-2 gap-4">
+                <!-- Memories inserted dynamically -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="py-12 text-center bg-white/50 rounded-2xl border-2 border-dashed border-[#ebdcc2] hidden">
+                <p class="text-stone-600 text-xs">Aún no hay recuerdos en el buzón.</p>
+            </div>
+        </section>
+
+        <!-- QR Gift Box Section -->
+        <section class="bg-gradient-to-br from-[#721c24] to-[#4a151b] text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
+            <div class="space-y-3 relative z-10 text-center sm:text-left sm:flex sm:items-center sm:justify-between sm:gap-4">
+                <div class="space-y-2">
+                    <span class="bg-amber-400/20 text-amber-200 text-[10px] px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider inline-block">Regalo Sorpresa</span>
+                    <h2 class="font-serif-title text-xl font-bold text-amber-100">Código QR para tu Cajita</h2>
+                    <p class="text-stone-200 text-xs leading-relaxed max-w-xs">
+                        Genera el QR de esta web, imprímelo y pégalo en la tapa de tu cajita de regalo.
+                    </p>
+                </div>
+                <div class="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 shrink-0 mt-4 sm:mt-0">
+                    <div id="qrcode" class="bg-white p-2 rounded-lg shadow-md mb-2 flex items-center justify-center min-h-[110px] min-w-[110px]">
+                        <p class="text-stone-400 text-[10px]">Generando...</p>
+                    </div>
+                    <button onclick="openBoxModal()" class="bg-amber-400 hover:bg-amber-300 text-[#721c24] font-semibold px-4 py-1.5 rounded-lg text-xs transition-all shadow-sm">
+                        Ver simulación
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#f5eedc] border-t border-[#e2d4bd] py-6 text-center text-xs text-stone-600">
+        <p class="font-serif-title text-sm text-[#721c24] font-semibold mb-1">Hecho con todo mi amor para ti</p>
+        <p class="text-[11px]"</p>
+    </footer>
+
+    <!-- Simulation Modal -->
+    <div id="boxModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#fdfbf7] rounded-2xl max-w-xs w-full p-6 shadow-2xl border border-[#ebdcc2] relative text-center">
+            <button onclick="closeBoxModal()" class="absolute top-3 right-3 text-stone-400 hover:text-[#721c24] text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="font-serif-title text-xl font-bold text-[#721c24] mb-1">Cajita Sorpresa</h3>
+            <p class="text-[11px] text-stone-600 mb-4">Así luciría el QR en la tapa de tu caja de regalo.</p>
+            <div class="bg-gradient-to-br from-[#721c24] to-[#4a151b] rounded-xl p-4 text-center text-white relative shadow-inner border-2 border-amber-200/30 mb-4">
+                <div class="relative z-10 bg-white rounded-lg p-3 inline-block shadow-md text-stone-800">
+                    <div id="modalQrcode" class="flex items-center justify-center"></div>
+                </div>
+            </div>
+            <button onclick="closeBoxModal()" class="bg-[#721c24] text-white text-xs px-5 py-2 rounded-xl font-medium w-full">
+                ¡Me encanta!
+            </button>
+        </div>
+    </div>
+
+    <script>
+    
+
+        function handleFiles(files) {
+            if (!files || files.length === 0) return;
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newMemory = {
+                        id: Date.now() + index,
+                        url: e.target.result,
+                        caption: prompt("Frase para este recuerdo:", "Nuestro momento especial ❤️") || "Te amo con el alma",
+                        rotation: (Math.random() * 3 - 1.5).toFixed(1)
+                    };
+                    memories.unshift(newMemory);
+                    renderMemories();
+                };
+                reader.readAsDataURL(file);
+            });
+            document.getElementById('memoryInput').value = '';
+        }
+
+        function renderMemories() {
+            const grid = document.getElementById('memoryGrid');
+            const countEl = document.getElementById('memoryCount');
+            const emptyState = document.getElementById('emptyState');
+
+            countEl.textContent = memories.length;
+
+            if (memories.length === 0) {
+                emptyState.classList.remove('hidden');
+                grid.innerHTML = '';
+                grid.appendChild(emptyState);
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = '';
+
+            memories.forEach((mem) => {
+                const card = document.createElement('div');
+                card.className = `polaroid rounded-lg transition-all duration-300`;
+                card.style.transform = `rotate(${mem.rotation}deg)`;
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden rounded bg-stone-100 aspect-square mb-2.5 group">
+                        <img src="${mem.url}" alt="Recuerdo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/300x300/721c24/fdfbf7?text=Amor'">
+                        <button onclick="deleteMemory(${mem.id})" class="absolute top-1.5 right-1.5 bg-black/60 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px]" title="Eliminar">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="px-0.5 text-center">
+                        <p class="font-script text-xl text-[#721c24] mb-0.5 line-clamp-1">${escapeHTML(mem.caption)}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function deleteMemory(id) {
+            memories = memories.filter(m => m.id !== id);
+            renderMemories();
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        }
+
+        function generateQRCode() {
+            const currentUrl = window.location.href;
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, { text: currentUrl, width: 100, height: 100, colorDark: "#721c24", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+
+            const modalQrContainer = document.getElementById('modalQrcode');
+            modalQrContainer.innerHTML = '';
+            new QRCode(modalQrContainer, { text: currentUrl, width: 90, height: 90, colorDark: "#721c24", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+        }
+
+        function openBoxModal() {
+            generateQRCode();
+            document.getElementById('boxModal').classList.remove('hidden');
+        }
+
+        function closeBoxModal() {
+            document.getElementById('boxModal').classList.add('hidden');
+        }
+
+        window.onload = function() {
+            renderMemories();
+            generateQRCode();
+        };
+    </script>
+</body>
+</html>
