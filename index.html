@@ -98,53 +98,7 @@
             </div>
         </section>
 
-        <!-- QR Gift Box Section -->
-        <section class="bg-gradient-to-br from-[#721c24] to-[#4a151b] text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
-            <div class="space-y-3 relative z-10 text-center sm:text-left sm:flex sm:items-center sm:justify-between sm:gap-4">
-                <div class="space-y-2">
-                    <span class="bg-amber-400/20 text-amber-200 text-[10px] px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider inline-block">Regalo Sorpresa</span>
-                    <h2 class="font-serif-title text-xl font-bold text-amber-100">Código QR para tu Cajita</h2>
-                    <p class="text-stone-200 text-xs leading-relaxed max-w-xs">
-                        Genera el QR de esta web, imprímelo y pégalo en la tapa de tu cajita de regalo.
-                    </p>
-                </div>
-                <div class="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 shrink-0 mt-4 sm:mt-0">
-                    <div id="qrcode" class="bg-white p-2 rounded-lg shadow-md mb-2 flex items-center justify-center min-h-[110px] min-w-[110px]">
-                        <p class="text-stone-400 text-[10px]">Generando...</p>
-                    </div>
-                    <button onclick="openBoxModal()" class="bg-amber-400 hover:bg-amber-300 text-[#721c24] font-semibold px-4 py-1.5 rounded-lg text-xs transition-all shadow-sm">
-                        Ver simulación
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
 
-    <footer class="bg-[#f5eedc] border-t border-[#e2d4bd] py-6 text-center text-xs text-stone-600">
-        <p class="font-serif-title text-sm text-[#721c24] font-semibold mb-1">Hecho con todo mi amor para ti</p>
-        <p class="text-[11px]"</p>
-    </footer>
-
-    <!-- Simulation Modal -->
-    <div id="boxModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#fdfbf7] rounded-2xl max-w-xs w-full p-6 shadow-2xl border border-[#ebdcc2] relative text-center">
-            <button onclick="closeBoxModal()" class="absolute top-3 right-3 text-stone-400 hover:text-[#721c24] text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <h3 class="font-serif-title text-xl font-bold text-[#721c24] mb-1">Cajita Sorpresa</h3>
-            <p class="text-[11px] text-stone-600 mb-4">Así luciría el QR en la tapa de tu caja de regalo.</p>
-            <div class="bg-gradient-to-br from-[#721c24] to-[#4a151b] rounded-xl p-4 text-center text-white relative shadow-inner border-2 border-amber-200/30 mb-4">
-                <div class="relative z-10 bg-white rounded-lg p-3 inline-block shadow-md text-stone-800">
-                    <div id="modalQrcode" class="flex items-center justify-center"></div>
-                </div>
-            </div>
-            <button onclick="closeBoxModal()" class="bg-[#721c24] text-white text-xs px-5 py-2 rounded-xl font-medium w-full">
-                ¡Me encanta!
-            </button>
-        </div>
-    </div>
-
-    <script>
     
 
         function handleFiles(files) {
