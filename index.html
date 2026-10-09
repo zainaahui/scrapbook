@@ -31,6 +31,31 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Lluvia de corazones flotantes */
+        .floating-heart {
+            position: fixed;
+            color: #ff5c75;
+            font-size: 1.2rem;
+            user-select: none;
+            pointer-events: none;
+            z-index: 9999;
+            animation: floatUp 3s linear forwards;
+            opacity: 0.8;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.6) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120px) scale(1.4) rotate(30deg);
+                opacity: 0;
+            }
         }
 
         .container {
@@ -39,6 +64,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            z-index: 2;
         }
 
         header {
@@ -159,7 +185,7 @@
             font-style: italic;
         }
 
-        /* Modal para añadir foto */
+        /* Modal para añadir fotos múltiples */
         .modal {
             display: none;
             position: fixed;
@@ -179,174 +205,4 @@
             padding: 24px;
             border-radius: 16px;
             width: 100%;
-            max-width: 360px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .modal-content h3 {
-            font-family: 'Playfair Display', serif;
-            color: var(--burgundy);
-            margin-bottom: 12px;
-            font-size: 1.3rem;
-        }
-
-        .modal-content input[type="file"] {
-            margin: 14px 0;
-            font-size: 0.85rem;
-            color: var(--burgundy);
-        }
-
-        .modal-content input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #d4c5c7;
-            border-radius: 8px;
-            font-family: 'Quicksand', sans-serif;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
-        }
-
-        .modal-btns {
-            display: flex;
-            gap: 10px;
-        }
-
-        .modal-btns button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Quicksand', sans-serif;
-        }
-
-        .btn-save {
-            background-color: var(--burgundy);
-            color: var(--cream);
-        }
-
-        .btn-cancel {
-            background-color: #e0d5d7;
-            color: var(--burgundy-dark);
-        }
-
-        footer {
-            margin-top: 35px;
-            text-align: center;
-            color: #E8D5D8;
-            font-size: 0.8rem;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <header>
-            <h1>Te Amo</h1>
-            <div class="subtitle">Nuestra historia en recuerdos</div>
-        </header>
-
-        <!-- Buzón compacto -->
-        <div class="mailbox-section">
-            <button class="mailbox-btn" onclick="openModal()">
-                <span class="heart-icon">❤️</span>
-                <span>añadir nuevos recuerdos aquí</span>
-            </button>
-        </div>
-
-        <!-- Galería de fotos vacía inicialmente -->
-        <div class="gallery" id="gallery">
-            <!-- Las fotos guardadas aparecerán aquí automáticamente -->
-        </div>
-
-        <footer>Creado con todo el amor del mundo para ti 💖</footer>
-    </div>
-
-    <!-- Modal de subida -->
-    <div class="modal" id="uploadModal">
-        <div class="modal-content">
-            <h3>Nuevo Recuerdo</h3>
-            <input type="file" id="imageInput" accept="image/*"><br>
-            <input type="text" id="captionInput" placeholder="Escribe un mensaje tierno..."><br>
-            <div class="modal-btns">
-                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-                <button class="btn-save" onclick="addPhoto()">Guardar</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', loadPhotos);
-
-        function openModal() {
-            document.getElementById('uploadModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('uploadModal').style.display = 'none';
-            document.getElementById('imageInput').value = '';
-            document.getElementById('captionInput').value = '';
-        }
-
-        function getStoredPhotos() {
-            const stored = localStorage.getItem('scrapbook_photos');
-            return stored ? JSON.parse(stored) : [];
-        }
-
-        function saveStoredPhotos(photos) {
-            localStorage.setItem('scrapbook_photos', JSON.stringify(photos));
-        }
-
-        function loadPhotos() {
-            const gallery = document.getElementById('gallery');
-            const photos = getStoredPhotos();
-
-            if (photos.length === 0) {
-                gallery.innerHTML = '<div class="empty-state">Aún no hay recuerdos. ¡Presiona el buzón con corazón arriba para añadir el primero! 💌</div>';
-                return;
-            }
-
-            gallery.innerHTML = '';
-            photos.forEach(item => {
-                const polaroid = document.createElement('div');
-                polaroid.className = 'polaroid';
-                polaroid.innerHTML = `
-                    <img src="${item.image}" alt="Recuerdo">
-                    <div class="polaroid-caption">${item.caption}</div>
-                `;
-                gallery.appendChild(polaroid);
-            });
-        }
-
-        function addPhoto() {
-            const fileInput = document.getElementById('imageInput');
-            const captionInput = document.getElementById('captionInput');
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const caption = captionInput.value.trim() || 'Nuestro amor';
-                    const newPhoto = {
-                        image: e.target.result,
-                        caption: caption
-                    };
-
-                    const photos = getStoredPhotos();
-                    photos.unshift(newPhoto); // Añadir al inicio
-                    saveStoredPhotos(photos);
-
-                    loadPhotos();
-                    closeModal();
-                }
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                alert('Por favor selecciona una foto.');
-            }
-        }
-    </script>
-</body>
-</html>
+            max-width
