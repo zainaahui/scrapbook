@@ -112,6 +112,18 @@
             gap: 24px;
         }
 
+        .empty-state {
+            text-align: center;
+            color: #E8D5D8;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            padding: 40px 20px;
+            font-size: 1.05rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,0.2);
+        }
+
         .polaroid {
             background-color: var(--cream);
             padding: 12px 12px 28px 12px;
@@ -246,48 +258,9 @@
             </button>
         </div>
 
-        <!-- Galería de fotos iniciales -->
+        <!-- Galería de fotos vacía inicialmente -->
         <div class="gallery" id="gallery">
-            <div class="polaroid">
-                <img src="image.png" alt="Recuerdo">
-                <div class="polaroid-caption">Nuestro amor</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_2.png" alt="Recuerdo">
-                <div class="polaroid-caption">Momentos juntos</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_3.png" alt="Recuerdo">
-                <div class="polaroid-caption">Contigo siempre</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_4.png" alt="Recuerdo">
-                <div class="polaroid-caption">Instantes mágicos</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_5.png" alt="Recuerdo">
-                <div class="polaroid-caption">Tu sonrisa</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_6.png" alt="Recuerdo">
-                <div class="polaroid-caption">Felicidad pura</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_7.png" alt="Recuerdo">
-                <div class="polaroid-caption">Compañeros de vida</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_8.png" alt="Recuerdo">
-                <div class="polaroid-caption">Días hermosos</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_9.png" alt="Recuerdo">
-                <div class="polaroid-caption">Nuestro refugio</div>
-            </div>
-            <div class="polaroid">
-                <img src="image_10.png" alt="Recuerdo">
-                <div class="polaroid-caption">Por siempre</div>
-            </div>
+            <!-- Las fotos guardadas aparecerán aquí automáticamente -->
         </div>
 
         <footer>Creado con todo el amor del mundo para ti 💖</footer>
@@ -307,6 +280,8 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', loadPhotos);
+
         function openModal() {
             document.getElementById('uploadModal').style.display = 'flex';
         }
@@ -317,6 +292,36 @@
             document.getElementById('captionInput').value = '';
         }
 
+        function getStoredPhotos() {
+            const stored = localStorage.getItem('scrapbook_photos');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveStoredPhotos(photos) {
+            localStorage.setItem('scrapbook_photos', JSON.stringify(photos));
+        }
+
+        function loadPhotos() {
+            const gallery = document.getElementById('gallery');
+            const photos = getStoredPhotos();
+
+            if (photos.length === 0) {
+                gallery.innerHTML = '<div class="empty-state">Aún no hay recuerdos. ¡Presiona el buzón con corazón arriba para añadir el primero! 💌</div>';
+                return;
+            }
+
+            gallery.innerHTML = '';
+            photos.forEach(item => {
+                const polaroid = document.createElement('div');
+                polaroid.className = 'polaroid';
+                polaroid.innerHTML = `
+                    <img src="${item.image}" alt="Recuerdo">
+                    <div class="polaroid-caption">${item.caption}</div>
+                `;
+                gallery.appendChild(polaroid);
+            });
+        }
+
         function addPhoto() {
             const fileInput = document.getElementById('imageInput');
             const captionInput = document.getElementById('captionInput');
@@ -324,18 +329,17 @@
             if (fileInput.files && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const gallery = document.getElementById('gallery');
-                    const polaroid = document.createElement('div');
-                    polaroid.className = 'polaroid';
-                    
                     const caption = captionInput.value.trim() || 'Nuestro amor';
+                    const newPhoto = {
+                        image: e.target.result,
+                        caption: caption
+                    };
 
-                    polaroid.innerHTML = `
-                        <img src="${e.target.result}" alt="Recuerdo">
-                        <div class="polaroid-caption">${caption}</div>
-                    `;
+                    const photos = getStoredPhotos();
+                    photos.unshift(newPhoto); // Añadir al inicio
+                    saveStoredPhotos(photos);
 
-                    gallery.insertBefore(polaroid, gallery.firstChild);
+                    loadPhotos();
                     closeModal();
                 }
                 reader.readAsDataURL(fileInput.files[0]);
