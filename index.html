@@ -109,7 +109,7 @@
             font-family: 'Playfair Display', serif;
         }
 
-        /* Buzón Compacto y Tierno */
+        /* Buzón Compacto con el nuevo texto */
         .mailbox-section {
             width: 100%;
             display: flex;
@@ -269,57 +269,3 @@
 
         .btn-save {
             background-color: var(--burgundy);
-            color: var(--cream);
-        }
-
-        .btn-cancel {
-            background-color: #e0d5d7;
-            color: var(--burgundy-dark);
-        }
-
-        footer {
-            margin-top: 35px;
-            text-align: center;
-            color: #E8D5D8;
-            font-size: 0.8rem;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <header>
-            <div class="title-wrapper">
-                <span class="side-heart">💖</span>
-                <h1>Te Amo</h1>
-                <span class="side-heart">💖</span>
-            </div>
-            <div class="subtitle">Nuestra historia en recuerdos</div>
-        </header>
-
-        <!-- Buzón compacto -->
-        <div class="mailbox-section">
-            <button class="mailbox-btn" onclick="openModal()">
-                <span class="heart-icon">❤️</span>
-                <span>añadir nuevos recuerdos aquí</span>
-            </button>
-        </div>
-
-        <!-- Galería de fotos -->
-        <div class="gallery" id="gallery">
-            <!-- Las fotos guardadas aparecerán aquí automáticamente -->
-        </div>
-
-        <footer>Creado con todo el amor del mundo para ti 💖</footer>
-    </div>
-
-    <!-- Modal de subida -->
-    <div class="modal" id="uploadModal">
-        <div class="modal-content">
-            <h3>Nuevos Recuerdos</h3>
-            <p style="font-size: 0.8rem; color: #665; margin-bottom: 6px;">Puedes seleccionar varias fotos a la vez</p>
-            <input type="file" id="imageInput" accept="image/*" multiple><br>
-            <input type="text" id="captionInput" placeholder="Mensaje común (ej: Nuestro amor)..."><br>
-            <div class="modal-btns
