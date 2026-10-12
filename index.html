@@ -10,7 +10,6 @@
             --burgundy: #591624;
             --burgundy-dark: #3f0e19;
             --cream: #FDFBF7;
-            --cream-card: #F7F3EB;
             --accent-gold: #D4AF37;
             --text-main: #332225;
         }
@@ -32,10 +31,8 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* Lluvia de corazones flotantes por movimiento */
         .floating-heart {
             position: fixed;
             color: #ff5c75;
@@ -48,14 +45,8 @@
         }
 
         @keyframes floatUp {
-            0% {
-                transform: translateY(0) scale(0.6) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-120px) scale(1.4) rotate(30deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120px) scale(1.4) rotate(30deg); opacity: 0; }
         }
 
         .container {
@@ -64,7 +55,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 2;
         }
 
         header {
@@ -109,7 +99,6 @@
             font-family: 'Playfair Display', serif;
         }
 
-        /* Buzón Compacto con el nuevo texto */
         .mailbox-section {
             width: 100%;
             display: flex;
@@ -149,7 +138,6 @@
             50% { transform: scale(1.25); }
         }
 
-        /* Galería de Recuerdos Estilo Polaroid */
         .gallery {
             width: 100%;
             display: flex;
@@ -174,17 +162,6 @@
             padding: 12px 12px 28px 12px;
             border-radius: 4px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-            transform: rotate(var(--rot, 0deg));
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .polaroid:nth-child(even) {
-            --rot: 1.5deg;
-        }
-
-        .polaroid:nth-child(odd) {
-            --rot: -1.5deg;
         }
 
         .polaroid img {
@@ -204,7 +181,6 @@
             font-style: italic;
         }
 
-        /* Modal para añadir fotos múltiples */
         .modal {
             display: none;
             position: fixed;
@@ -269,3 +245,176 @@
 
         .btn-save {
             background-color: var(--burgundy);
+            color: var(--cream);
+        }
+
+        .btn-cancel {
+            background-color: #e0d5d7;
+            color: var(--burgundy-dark);
+        }
+
+        footer {
+            margin-top: 35px;
+            text-align: center;
+            color: #E8D5D8;
+            font-size: 0.8rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="title-wrapper">
+                <span class="side-heart">💖</span>
+                <h1>Te Amo</h1>
+                <span class="side-heart">💖</span>
+            </div>
+            <div class="subtitle">Nuestra historia en recuerdos</div>
+        </header>
+
+        <div class="mailbox-section">
+            <button class="mailbox-btn" onclick="openModal()">
+                <span class="heart-icon">❤️</span>
+                <span>Nuestro buzón de recuerdos</span>
+            </button>
+        </div>
+
+        <div class="gallery" id="gallery"></div>
+
+        <footer>Creado con todo el amor del mundo para ti 💖</footer>
+    </div>
+
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <h3>Nuestro Buzón</h3>
+            <p style="font-size: 0.8rem; color: #665; margin-bottom: 6px;">Selecciona tus fotos (PNG o JPG)</p>
+            <input type="file" id="imageInput" accept="image/*" multiple><br>
+            <input type="text" id="captionInput" placeholder="Mensaje tierno..."><br>
+            <div class="modal-btns">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-save" onclick="addPhotos()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            loadPhotos();
+            setupHeartRain();
+        };
+
+        let moveCounter = 0;
+        function setupHeartRain() {
+            window.addEventListener('scroll', function() {
+                moveCounter++;
+                if (moveCounter % 6 === 0) {
+                    createHeart(window.innerWidth * Math.random(), window.scrollY + window.innerHeight - 50);
+                }
+            });
+            window.addEventListener('click', function(e) {
+                createHeart(e.clientX, e.clientY);
+            });
+        }
+
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            document.body.appendChild(heart);
+            setTimeout(function() {
+                heart.remove();
+            }, 3000);
+        }
+
+        function openModal() {
+            document.getElementById('uploadModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+            document.getElementById('imageInput').value = '';
+            document.getElementById('captionInput').value = '';
+        }
+
+        function getStoredPhotos() {
+            try {
+                const stored = localStorage.getItem('scrapbook_photos_v2');
+                return stored ? JSON.parse(stored) : [];
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function saveStoredPhotos(photos) {
+            try {
+                localStorage.setItem('scrapbook_photos_v2', JSON.stringify(photos));
+            } catch(e) {
+                alert('El almacenamiento local está lleno o no disponible.');
+            }
+        }
+
+        function loadPhotos() {
+            const gallery = document.getElementById('gallery');
+            const photos = getStoredPhotos();
+
+            if (!photos || photos.length === 0) {
+                gallery.innerHTML = '<div class="empty-state">Aún no hay recuerdos. ¡Toca nuestro buzón de recuerdos para añadir tus fotos! 💌</div>';
+                return;
+            }
+
+            gallery.innerHTML = '';
+            for (let i = 0; i < photos.length; i++) {
+                const item = photos[i];
+                const polaroid = document.createElement('div');
+                polaroid.className = 'polaroid';
+                polaroid.innerHTML = '<img src="' + item.image + '" alt="Recuerdo"><div class="polaroid-caption">' + item.caption + '</div>';
+                gallery.appendChild(polaroid);
+            }
+        }
+
+        function addPhotos() {
+            const fileInput = document.getElementById('imageInput');
+            const captionInput = document.getElementById('captionInput');
+
+            if (fileInput.files && fileInput.files.length > 0) {
+                const files = fileInput.files;
+                const captionText = captionInput.value.trim() || 'Nuestro amor';
+                let processedCount = 0;
+                const newPhotos = [];
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    
+                    reader.onload = (function(f, idx) {
+                        return function(e) {
+                            newPhotos.push({
+                                image: e.target.result,
+                                caption: files.length > 1 ? (captionText + ' (' + (idx + 1) + ')') : captionText
+                            });
+                            processedCount++;
+
+                            if (processedCount === files.length) {
+                                const photos = getStoredPhotos();
+                                const combined = newPhotos.concat(photos);
+                                saveStoredPhotos(combined);
+                                loadPhotos();
+                                closeModal();
+                            }
+                        };
+                    })(file, i);
+
+                    reader.readAsDataURL(file);
+                }
+            } else {
+                alert('Por favor selecciona al menos una foto.');
+            }
+        }
+    </script>
+</body>
+</html>
