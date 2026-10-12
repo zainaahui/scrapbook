@@ -301,6 +301,9 @@
     </div>
 
     <script>
+        // Memoria interna de la sesión actual para evitar problemas de espacio
+        let currentPhotos = [];
+
         window.onload = function() {
             loadPhotos();
             setupHeartRain();
@@ -341,35 +344,17 @@
             document.getElementById('captionInput').value = '';
         }
 
-        function getStoredPhotos() {
-            try {
-                const stored = localStorage.getItem('scrapbook_photos_v2');
-                return stored ? JSON.parse(stored) : [];
-            } catch(e) {
-                return [];
-            }
-        }
-
-        function saveStoredPhotos(photos) {
-            try {
-                localStorage.setItem('scrapbook_photos_v2', JSON.stringify(photos));
-            } catch(e) {
-                alert('El almacenamiento local está lleno o no disponible.');
-            }
-        }
-
         function loadPhotos() {
             const gallery = document.getElementById('gallery');
-            const photos = getStoredPhotos();
 
-            if (!photos || photos.length === 0) {
+            if (!currentPhotos || currentPhotos.length === 0) {
                 gallery.innerHTML = '<div class="empty-state">Aún no hay recuerdos. ¡Toca nuestro buzón de recuerdos para añadir tus fotos! 💌</div>';
                 return;
             }
 
             gallery.innerHTML = '';
-            for (let i = 0; i < photos.length; i++) {
-                const item = photos[i];
+            for (let i = 0; i < currentPhotos.length; i++) {
+                const item = currentPhotos[i];
                 const polaroid = document.createElement('div');
                 polaroid.className = 'polaroid';
                 polaroid.innerHTML = '<img src="' + item.image + '" alt="Recuerdo"><div class="polaroid-caption">' + item.caption + '</div>';
@@ -384,33 +369,20 @@
             if (fileInput.files && fileInput.files.length > 0) {
                 const files = fileInput.files;
                 const captionText = captionInput.value.trim() || 'Nuestro amor';
-                let processedCount = 0;
-                const newPhotos = [];
 
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
-                    const reader = new FileReader();
+                    // Crea una URL temporal del archivo sin saturar la memoria local
+                    const objectURL = URL.createObjectURL(file);
                     
-                    reader.onload = (function(f, idx) {
-                        return function(e) {
-                            newPhotos.push({
-                                image: e.target.result,
-                                caption: files.length > 1 ? (captionText + ' (' + (idx + 1) + ')') : captionText
-                            });
-                            processedCount++;
-
-                            if (processedCount === files.length) {
-                                const photos = getStoredPhotos();
-                                const combined = newPhotos.concat(photos);
-                                saveStoredPhotos(combined);
-                                loadPhotos();
-                                closeModal();
-                            }
-                        };
-                    })(file, i);
-
-                    reader.readAsDataURL(file);
+                    currentPhotos.unshift({
+                        image: objectURL,
+                        caption: files.length > 1 ? (captionText + ' (' + (i + 1) + ')') : captionText
+                    });
                 }
+
+                loadPhotos();
+                closeModal();
             } else {
                 alert('Por favor selecciona al menos una foto.');
             }
